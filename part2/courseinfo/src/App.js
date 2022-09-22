@@ -73,7 +73,6 @@ const App = () => {
     }
   ]
 
-  // return <Course course={course} />
   return (
     <>
       {courses.map(course =>
