@@ -45,16 +45,11 @@ const App = () => {
 
    
   const [selected, setSelected] = useState(0)
-  const [votes, setVotes] = useState([])
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
 
   const setVote = (voteArr, sel) => {
     const afterVoting = Vote(voteArr, sel)
     setVotes(afterVoting)
-  }
-
-  if (votes.length === 0) {
-    const zeroArr = Array(anecdotes.length).fill(0)
-    setVotes(zeroArr)
   }
 
   return (
