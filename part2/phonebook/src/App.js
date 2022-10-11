@@ -10,15 +10,18 @@ const App = () => {
   const [persons, setPersons] = useState([
     { 
       name: 'Arto Hellas',
+      number: '123.456.7890',
       id: 1
     }
   ]) 
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
   const addName = (event) => {
     event.preventDefault()
     const person = {
       name: newName,
+      number: newNumber,
       id: persons.length + 1,
     }
     const alreadyAdded = CheckIfNameAdded(persons, person)
@@ -27,11 +30,16 @@ const App = () => {
     } else {
       setPersons(persons.concat(person))
       setNewName('')
+      setNewNumber('')
     }
   }
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value)
   }
 
   return (
@@ -42,6 +50,12 @@ const App = () => {
           name: <input 
             value={newName}
             onChange={handleNameChange}
+          />
+        </div>
+        <div>
+          number: <input 
+            value={newNumber}
+            onChange={handleNumberChange}
           />
         </div>
         <div>
