@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+
 import Filter from './components/Filter'
 import AddForm from './components/AddForm'
 import PeopleList from './components/PeopleList'
@@ -25,6 +27,19 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
 
+  const hook = () => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        console.log('promise fulfilled')
+        setPersons(response.data)
+        setFilteredPeople(FilterPeople(response.data, filter))
+      })
+  }
+  
+  useEffect(hook, [])
+  console.log('render', persons.length, 'people')
 
   const addName = (event) => {
     event.preventDefault()
