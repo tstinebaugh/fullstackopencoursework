@@ -1,7 +1,6 @@
 function CountryDetailed({ country }) {
     const languages = (languages) => {
         let langs = Object.values(languages)
-        console.log(langs)
         return langs
     }
     
