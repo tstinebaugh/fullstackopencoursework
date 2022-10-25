@@ -6,8 +6,8 @@ import PeopleList from './components/PeopleList'
 import contacts from './services/contacts'
 
 const CheckIfNameAdded = (persons, newPerson) => {
-  const filteredNames = persons.filter(person => person.name.toLowerCase() === newPerson.name.toLowerCase())
-  return filteredNames.length
+  const filteredPeople = persons.filter(person => person.name.toLowerCase() === newPerson.name.toLowerCase())
+  return filteredPeople
 }
 
 const FilterPeople = (persons, searchKey) => {
@@ -38,8 +38,17 @@ const App = () => {
       number: newNumber,
     }
     const alreadyAdded = CheckIfNameAdded(persons, person)
-    if (alreadyAdded > 0) {
-      window.alert(`${newName} is already added to phonebook`);
+    if (alreadyAdded.length > 0) {
+      if (window.confirm(`${person.name} is already added to the phonebook, replace old number with a new one?`)){
+        console.log(alreadyAdded)
+        const changedPerson = { ...alreadyAdded[0], number: newNumber }
+        contacts
+        .update(changedPerson.id, changedPerson).then(returnedPerson => {
+          const newPeople = persons.map(p => p.id !== returnedPerson.id ? p : returnedPerson)
+          setPersons(newPeople)
+          setFilteredPeople(FilterPeople(newPeople, filter))
+        })
+      }
     } else {
       contacts
       .create(person)
