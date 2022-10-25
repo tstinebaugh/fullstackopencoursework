@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 
 import Filter from './components/Filter'
 import AddForm from './components/AddForm'
 import PeopleList from './components/PeopleList'
+import contacts from './services/contacts'
 
 const CheckIfNameAdded = (persons, newPerson) => {
   const filteredNames = persons.filter(person => person.name.toLowerCase() === newPerson.name.toLowerCase())
@@ -15,13 +15,7 @@ const FilterPeople = (persons, searchKey) => {
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { 
-      name: 'Arto Hellas',
-      number: '123.456.7890',
-      id: 1
-    }
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [filteredPeople, setFilteredPeople] = useState(persons) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -29,34 +23,35 @@ const App = () => {
 
   const hook = () => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
-        setFilteredPeople(FilterPeople(response.data, filter))
+    contacts.getAll()
+      .then(contacts => {
+        setPersons(contacts)
+        setFilteredPeople(FilterPeople(contacts, filter))
       })
   }
   
   useEffect(hook, [])
-  console.log('render', persons.length, 'people')
 
   const addName = (event) => {
     event.preventDefault()
     const person = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
     }
     const alreadyAdded = CheckIfNameAdded(persons, person)
     if (alreadyAdded > 0) {
       window.alert(`${newName} is already added to phonebook`);
     } else {
-      const people =persons.concat(person)
-      setPersons(people)
-      setNewName('')
-      setNewNumber('')
-      setFilteredPeople(FilterPeople(people, filter))
+      contacts
+      .create(person)
+      .then(returnedPerson => {
+        const people=persons.concat(person)
+        setPersons(people)
+        setNewName('')
+        setNewNumber('')
+        setFilteredPeople(FilterPeople(people, filter))
+      })
+      
     }
   }
 
