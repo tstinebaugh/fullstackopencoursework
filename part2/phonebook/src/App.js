@@ -22,7 +22,6 @@ const App = () => {
   const [filter, setNewFilter] = useState('')
 
   const hook = () => {
-    console.log('effect')
     contacts.getAll()
       .then(contacts => {
         setPersons(contacts)
@@ -45,7 +44,7 @@ const App = () => {
       contacts
       .create(person)
       .then(returnedPerson => {
-        const people=persons.concat(person)
+        const people=persons.concat(returnedPerson)
         setPersons(people)
         setNewName('')
         setNewNumber('')
@@ -53,6 +52,21 @@ const App = () => {
       })
       
     }
+  }
+
+  const deletePerson = (id) => {
+    contacts
+      .remove(id)
+      .then(response => {
+        const people = persons.filter(p => p.id !== id)
+        setPersons(people)
+        setFilteredPeople(FilterPeople(people, filter))
+      })
+      .catch(error => {
+        alert(
+          `the contactwas already deleted from server`
+        )
+      })
   }
 
   const handleNameChange = (event) => {
@@ -83,6 +97,7 @@ const App = () => {
       <h2>Numbers</h2>
       <PeopleList
         people={filteredPeople}
+        deletePerson={deletePerson}
       ></PeopleList>
     </div>
   )
