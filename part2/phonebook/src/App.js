@@ -54,11 +54,12 @@ const App = () => {
     }
   }
 
-  const deletePerson = (id) => {
-    contacts
-      .remove(id)
+  const deletePerson = (person) => {
+    if (window.confirm(`Are you sure you want to delete ${person.name}?`)){
+      contacts
+      .remove(person.id)
       .then(response => {
-        const people = persons.filter(p => p.id !== id)
+        const people = persons.filter(p => p.id !== person.id)
         setPersons(people)
         setFilteredPeople(FilterPeople(people, filter))
       })
@@ -67,6 +68,7 @@ const App = () => {
           `the contactwas already deleted from server`
         )
       })
+    }
   }
 
   const handleNameChange = (event) => {
