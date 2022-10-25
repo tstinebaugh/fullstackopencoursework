@@ -24,6 +24,11 @@
       "name": "foo",
       "number": "bar",
       "id": 5
+    },
+    {
+      "name": "base",
+      "number": "ball",
+      "id": 6
     }
   ]
 }

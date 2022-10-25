@@ -4,6 +4,7 @@ import Filter from './components/Filter'
 import AddForm from './components/AddForm'
 import PeopleList from './components/PeopleList'
 import contacts from './services/contacts'
+import Notification from './components/Notification'
 
 const CheckIfNameAdded = (persons, newPerson) => {
   const filteredPeople = persons.filter(person => person.name.toLowerCase() === newPerson.name.toLowerCase())
@@ -20,6 +21,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
+  const [message, setMessage] = useState('')
 
   const hook = () => {
     contacts.getAll()
@@ -58,6 +60,10 @@ const App = () => {
         setNewName('')
         setNewNumber('')
         setFilteredPeople(FilterPeople(people, filter))
+        setMessage(`${returnedPerson.name} added to phonebook`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
       })
       
     }
@@ -74,7 +80,7 @@ const App = () => {
       })
       .catch(error => {
         alert(
-          `the contactwas already deleted from server`
+          `the contact was already deleted from server`
         )
       })
     }
@@ -96,6 +102,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message}></Notification>
       <Filter val={filter} handleFunc={handleFilterChange}></Filter>
       <h2>Add New Contact</h2>
       <AddForm 
