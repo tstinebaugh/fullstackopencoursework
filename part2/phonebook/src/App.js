@@ -49,6 +49,14 @@ const App = () => {
           const newPeople = persons.map(p => p.id !== returnedPerson.id ? p : returnedPerson)
           setPersons(newPeople)
           setFilteredPeople(FilterPeople(newPeople, filter))
+        }).catch(error => {
+          setMessage({
+            message: `${changedPerson.name} already deleted from server`,
+            err: true
+          })
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
       }
     } else {
@@ -60,7 +68,10 @@ const App = () => {
         setNewName('')
         setNewNumber('')
         setFilteredPeople(FilterPeople(people, filter))
-        setMessage(`${returnedPerson.name} added to phonebook`)
+        setMessage({
+          message: `${returnedPerson.name} added to phonebook`,
+          err: false
+        })
         setTimeout(() => {
           setMessage(null)
         }, 5000)
@@ -79,9 +90,13 @@ const App = () => {
         setFilteredPeople(FilterPeople(people, filter))
       })
       .catch(error => {
-        alert(
-          `the contact was already deleted from server`
-        )
+        setMessage({
+          message: `${error}`,
+          err: true
+        })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
       })
     }
   }

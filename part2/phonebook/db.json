@@ -19,16 +19,6 @@
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
       "id": 4
-    },
-    {
-      "name": "foo",
-      "number": "bar",
-      "id": 5
-    },
-    {
-      "name": "base",
-      "number": "ball",
-      "id": 6
     }
   ]
 }

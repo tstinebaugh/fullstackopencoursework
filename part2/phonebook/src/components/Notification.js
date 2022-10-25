@@ -4,7 +4,6 @@ const Notification = ({ message }) => {
     }
 
     const notificationStyle = {
-        color: 'green',
         background: 'lightgrey',
         fontSize: 20,
         borderStyle: 'solid',
@@ -12,10 +11,11 @@ const Notification = ({ message }) => {
         padding: 10,
         marginBottom: 10
       }
+    message.err ? notificationStyle.color = 'red' : notificationStyle.color = 'green'
 
     return (
         <div style={notificationStyle}>
-        {message}
+        {message.message}
         </div>
     )
 }
