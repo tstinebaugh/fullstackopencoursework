@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import Filter from './components/Filter'
 import AddForm from './components/AddForm'
@@ -16,8 +16,8 @@ const FilterPeople = (persons, searchKey) => {
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([]) 
-  const [filteredPeople, setFilteredPeople] = useState(persons) 
+  const [persons, setPersons] = useState([])
+  const [filteredPeople, setFilteredPeople] = useState(persons)
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
@@ -30,7 +30,7 @@ const App = () => {
         setFilteredPeople(FilterPeople(contacts, filter))
       })
   }
-  
+
   useEffect(hook, [])
 
   const addName = (event) => {
@@ -94,7 +94,7 @@ const App = () => {
     if (window.confirm(`Are you sure you want to delete ${person.name}?`)){
       contacts
       .remove(person.id)
-      .then(response => {
+      .then(() => {
         const people = persons.filter(p => p.id !== person.id)
         setPersons(people)
         setFilteredPeople(FilterPeople(people, filter))
@@ -130,9 +130,9 @@ const App = () => {
       <Notification message={message}></Notification>
       <Filter val={filter} handleFunc={handleFilterChange}></Filter>
       <h2>Add New Contact</h2>
-      <AddForm 
-        addName={addName} 
-        newName={newName} 
+      <AddForm
+        addName={addName}
+        newName={newName}
         handleNameChange={handleNameChange}
         newNumber={newNumber}
         handleNumberChange={handleNumberChange}

@@ -1,3 +1,6 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+
 const Person = ({ person, deletePerson }) => {
     return (
       <div>
@@ -5,5 +8,10 @@ const Person = ({ person, deletePerson }) => {
       </div>
     )
   }
-  
+
+Person.propTypes = {
+  person: PropTypes.any.isRequired,
+  deletePerson: PropTypes.func.isRequired,
+}
+
 export default Person
