@@ -50,8 +50,9 @@ const App = () => {
           setPersons(newPeople)
           setFilteredPeople(FilterPeople(newPeople, filter))
         }).catch(error => {
+          console.log(error.response.data.error)
           setMessage({
-            message: `${changedPerson.name} already deleted from server`,
+            message: `${error}`,
             err: true
           })
           setTimeout(() => {
@@ -76,7 +77,16 @@ const App = () => {
           setMessage(null)
         }, 5000)
       })
-      
+      .catch(error => {
+        console.log(error.response.data.error)
+        setMessage({
+          message: `${error.response.data.error}`,
+          err: true
+        })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      })
     }
   }
 
