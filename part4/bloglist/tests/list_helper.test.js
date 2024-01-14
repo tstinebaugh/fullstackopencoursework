@@ -117,3 +117,67 @@ describe('favorite blog', () => {
     })
   })
 })
+
+
+describe('most blogs', () => {
+  const listWithOneBlog = [
+    {
+      _id: '5a422aa71b54a676234d17f8',
+      title: 'Go To Statement Considered Harmful',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+      likes: 5,
+      __v: 0
+    }
+  ]
+
+  const multipleBlogsSameAuthor = [
+    ...listWithOneBlog,
+    {
+      _id: '123',
+      title: 'title2',
+      author: 'Edsger W. Dijkstra',
+      url: 'blah',
+      likes: 2,
+      __v: 0
+    }
+  ]
+
+  const diffAuthors = [
+    ...multipleBlogsSameAuthor,
+    {
+      _id: '234',
+      title: 'title3',
+      author: 'Bob Smith',
+      url: 'fancyurl',
+      likes: 8,
+      __v: 0
+    }
+  ]
+
+  test('nil blogs', () => {
+    const result = listHelper.mostBlogs(null)
+    expect(result).toEqual(null)
+  })
+
+  test('empty blogs', () => {
+    const result = listHelper.mostBlogs([])
+    expect(result).toEqual([])
+  })
+
+  test('one blog', () => {
+    const result = listHelper.mostBlogs(listWithOneBlog)
+    expect(result).toEqual(listWithOneBlog[0].likes)
+  })
+
+  test('multiple blogs', () => {
+    const result = listHelper.mostBlogs(multipleBlogsSameAuthor)
+    expect(result).toEqual(5)
+  })
+
+  test('diff authors', () => {
+    const result = listHelper.mostBlogs(diffAuthors)
+    expect(result).toEqual(8)
+  })
+
+})

@@ -1,3 +1,5 @@
+var lodash = require('lodash')
+
 const dummy = (blogs) => {
     return 1
 }
@@ -25,9 +27,20 @@ const favoriteBlog = (blogs) => {
     })
     return highestBlog
 }
+
+const mostBlogs = (blogs) => {
+    if (!blogs || blogs.length === 0) {
+        return blogs
+    }
+    const res = lodash.orderBy(blogs, ['likes'], ['desc'])
+    console.log(res)
+
+    return res[0].likes
+}
   
 module.exports = {
     dummy,
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBlogs
 }
