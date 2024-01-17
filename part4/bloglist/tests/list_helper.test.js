@@ -147,7 +147,23 @@ describe('most blogs', () => {
     ...multipleBlogsSameAuthor,
     {
       _id: '234',
+      title: 'title4',
+      author: 'Bob Smith',
+      url: 'fancyurl',
+      likes: 8,
+      __v: 0
+    },
+    {
+      _id: '434',
       title: 'title3',
+      author: 'Bob Smith',
+      url: 'fancyurl',
+      likes: 8,
+      __v: 0
+    },
+    {
+      _id: '235',
+      title: 'title5',
       author: 'Bob Smith',
       url: 'fancyurl',
       likes: 8,
@@ -167,17 +183,26 @@ describe('most blogs', () => {
 
   test('one blog', () => {
     const result = listHelper.mostBlogs(listWithOneBlog)
-    expect(result).toEqual(listWithOneBlog[0].likes)
+    expect(result).toEqual({
+      author: "Edsger W. Dijkstra",
+      blogs: 1
+    })
   })
 
   test('multiple blogs', () => {
     const result = listHelper.mostBlogs(multipleBlogsSameAuthor)
-    expect(result).toEqual(5)
+    expect(result).toEqual({
+      author: "Edsger W. Dijkstra",
+      blogs: 2
+    })
   })
 
   test('diff authors', () => {
     const result = listHelper.mostBlogs(diffAuthors)
-    expect(result).toEqual(8)
+    expect(result).toEqual({
+      author: "Bob Smith",
+      blogs: 3
+    })
   })
 
 })

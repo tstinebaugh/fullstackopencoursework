@@ -32,10 +32,19 @@ const mostBlogs = (blogs) => {
     if (!blogs || blogs.length === 0) {
         return blogs
     }
-    const res = lodash.orderBy(blogs, ['likes'], ['desc'])
-    console.log(res)
 
-    return res[0].likes
+    const authors = lodash.groupBy(blogs, 'author')
+    const paredDownAuthors = Object.keys(authors).map(author => {
+        return {
+            "author": author,
+            "blogs": authors[author].length
+        }
+    })
+
+    const sorted = lodash.sortBy(paredDownAuthors, 'blogs')
+    .reverse()
+    
+    return sorted[0]
 }
   
 module.exports = {
