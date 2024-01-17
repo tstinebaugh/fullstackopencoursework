@@ -46,10 +46,34 @@ const mostBlogs = (blogs) => {
     
     return sorted[0]
 }
+
+const mostLikes = (blogs) => {
+    if (!blogs || blogs.length === 0) {
+        return blogs
+    }
+
+    const authors = lodash.groupBy(blogs, 'author')
+    const paredDownAuthors = Object.keys(authors).map(author => {
+        const sumLikes = authors[author].reduce((acc, blog) => acc + blog.likes, 0)
+        return {
+            "author": author,
+            "likes": sumLikes
+        }
+    })
+
+    const sorted = lodash.sortBy(paredDownAuthors, 'likes')
+    .reverse()
+
+    return {
+        "author": sorted[0].author, 
+        "likes": sorted[0].likes
+    }
+}
   
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
