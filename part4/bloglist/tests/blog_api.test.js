@@ -34,12 +34,27 @@ describe('app test', () => {
             likes: 42
         }
 
-        const resp = await api.post('/api/blogs')
+        await api.post('/api/blogs')
             .send(newBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
 
         const blogsAtEnd = await helper.blogsInDb()
         expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+    })
+
+    test('default likes is 0 if omitted', async () => {
+        const newBlog = {
+            title: "foo",
+            author: "bar",
+            url: "baz",
+        }
+
+        const resp = await api.post('/api/blogs')
+            .send(newBlog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+        console.log(resp.body)
+        expect(resp.body.likes).toEqual(0)
     })
 })
