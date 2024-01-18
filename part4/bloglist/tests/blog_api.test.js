@@ -84,4 +84,17 @@ describe('app test', () => {
         const blogsAtEnd = await helper.blogsInDb()
         expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
     })
+
+    test('delete a blog post', async () => {
+        const blogs = await helper.blogsInDb()
+        const deleteId = blogs[0].id
+        await api.delete(`/api/blogs/${deleteId}`)
+            .expect(204)
+        
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+
+        const contents = blogsAtEnd.map(b => b.id)
+        expect(contents).not.toContain(deleteId)
+    })
 })

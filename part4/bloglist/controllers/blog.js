@@ -7,10 +7,14 @@ blogRouter.get('/', async (_request, response) => {
 })
 
 blogRouter.post('/', async (request, response) => {
-    console.log('blogRouter.post reached')
     const blog = new Blog(request.body)
     const savedBlog = await blog.save()
     response.status(201).json(savedBlog)
+})
+
+blogRouter.delete('/:id', async (request, response, next) => {
+    await Blog.findByIdAndDelete(request.params.id)
+    response.status(204).end()
 })
 
 module.exports = blogRouter
