@@ -54,7 +54,34 @@ describe('app test', () => {
             .send(newBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
-        console.log(resp.body)
         expect(resp.body.likes).toEqual(0)
+    })
+
+    test('blog not created if title omitted', async () => {
+        const newBlog = {
+            author: "bar",
+            url: "baz",
+        }
+
+        await api.post('/api/blogs')
+            .send(newBlog)
+            .expect(400)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    })
+
+    test('blog not created if url omitted', async () => {
+        const newBlog = {
+            title: "foo",
+            author: "bar",
+        }
+
+        await api.post('/api/blogs')
+            .send(newBlog)
+            .expect(400)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
     })
 })
