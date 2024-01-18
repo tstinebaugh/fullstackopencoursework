@@ -97,4 +97,18 @@ describe('app test', () => {
         const contents = blogsAtEnd.map(b => b.id)
         expect(contents).not.toContain(deleteId)
     })
+
+    test('update a blog post', async () => {
+        const blogs = await helper.blogsInDb()
+        const updateBlog = blogs[0]
+                
+        updateBlog.likes = updateBlog.likes + 37
+                
+        await api.put(`/api/blogs/${updateBlog.id}`)
+            .send(updateBlog)
+            .expect(200)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toContainEqual(updateBlog)
+    })
 })
