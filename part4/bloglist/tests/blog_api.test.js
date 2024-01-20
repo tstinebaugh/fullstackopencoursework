@@ -8,6 +8,30 @@ const bcrypt = require('bcrypt')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
+var userToken
+var userID
+
+beforeAll(async() => {
+    const createResp = await api.post('/api/users')
+        .send(helper.initialUser)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+    
+    expect(createResp.body.id).not.toBeNull()
+    userID = createResp.body.id
+
+    const loginResp = await api.post('/api/login')
+        .send({
+            username: helper.initialUser.username,
+            password: helper.initialUser.password
+        })
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    expect(loginResp.body.token).not.toBeNull()
+    userToken = loginResp.body.token
+})
+
 beforeEach(async () => {
     await Blog.deleteMany({})
 
@@ -39,6 +63,7 @@ describe('app test', () => {
 
         await api.post('/api/blogs')
             .send(newBlog)
+            .set('Authorization', `Bearer ${userToken}`)
             .expect(201)
             .expect('Content-Type', /application\/json/)
 
@@ -55,6 +80,7 @@ describe('app test', () => {
 
         const resp = await api.post('/api/blogs')
             .send(newBlog)
+            .set('Authorization', `Bearer ${userToken}`)
             .expect(201)
             .expect('Content-Type', /application\/json/)
         expect(resp.body.likes).toEqual(0)
@@ -68,6 +94,7 @@ describe('app test', () => {
 
         await api.post('/api/blogs')
             .send(newBlog)
+            .set('Authorization', `Bearer ${userToken}`)
             .expect(400)
 
         const blogsAtEnd = await helper.blogsInDb()
@@ -82,6 +109,7 @@ describe('app test', () => {
 
         await api.post('/api/blogs')
             .send(newBlog)
+            .set('Authorization', `Bearer ${userToken}`)
             .expect(400)
 
         const blogsAtEnd = await helper.blogsInDb()
@@ -89,13 +117,27 @@ describe('app test', () => {
     })
 
     test('delete a blog post', async () => {
-        const blogs = await helper.blogsInDb()
-        const deleteId = blogs[0].id
+        const newBlog = {
+            title: "foo",
+            author: "bar",
+            url: "baz",
+            likes: 42
+        }
+
+        const resp = await api.post('/api/blogs')
+            .send(newBlog)
+            .set('Authorization', `Bearer ${userToken}`)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
+        const deleteId = resp.body.id
+
         await api.delete(`/api/blogs/${deleteId}`)
+            .set('Authorization', `Bearer ${userToken}`)
             .expect(204)
         
         const blogsAtEnd = await helper.blogsInDb()
-        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 
         const contents = blogsAtEnd.map(b => b.id)
         expect(contents).not.toContain(deleteId)
@@ -109,6 +151,7 @@ describe('app test', () => {
                 
         await api.put(`/api/blogs/${updateBlog.id}`)
             .send(updateBlog)
+            .set('Authorization', `Bearer ${userToken}`)
             .expect(200)
 
         const blogsAtEnd = await helper.blogsInDb()
@@ -211,6 +254,33 @@ describe('app test', () => {
     })
 })
 
+describe('auth test', () => {
+    test('blog not created if auth token omitted', async () => {
+        const newBlog = {
+            title: "foo",
+            author: "bar",
+        }
+
+        await api.post('/api/blogs')
+            .send(newBlog)
+            .expect(401)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    })
+    
+    test('blog not deleted if auth token omitted', async () => {
+        const deleteBlog = await helper.blogsInDb()
+
+        await api.delete(`/api/blogs/${deleteBlog[0].id}`)
+            .expect(401)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    })
+})
+
 afterAll(async () => {
+    await User.findByIdAndDelete(userID)
     await mongoose.connection.close()
 })
