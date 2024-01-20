@@ -24,6 +24,9 @@ app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
 
+// Add before all routes
+app.use(middleware.tokenExtractor)
+
 app.use('/api/blogs', blogRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
