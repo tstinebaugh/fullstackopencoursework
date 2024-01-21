@@ -11,7 +11,7 @@ const App = () => {
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -71,7 +71,6 @@ const App = () => {
   
   const handleLogin = async (event) => {
     event.preventDefault()
-    
     try {
       const user = await loginService.login({
         username, password,
@@ -85,7 +84,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setErrorMessage('wrong credentials')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -118,17 +117,17 @@ const App = () => {
 
   const noteForm = () => (
     <form onSubmit={addNote}>
-        <input
+      <input
         value={newNote}
         onChange={handleNoteChange}
-        />
-        <button type="submit">save</button>
+      />
+      <button type="submit">save</button>
     </form>  
   )
 
   const notesToShow = showAll
     ? notes
-    : notes.filter(note => note.important)  
+    : notes.filter(note => note.important)
 
   return (
     <div>
@@ -157,13 +156,7 @@ const App = () => {
           />
         )}
       </ul>
-      <form onSubmit={addNote}>
-      <input
-          value={newNote}
-          onChange={handleNoteChange}
-        />
-        <button type="submit">save</button>
-      </form>
+
       <Footer />
     </div>
   )
