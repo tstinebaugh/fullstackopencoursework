@@ -5,6 +5,8 @@ import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+const loginTokenName = 'loggedBlogappUser'
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
@@ -19,7 +21,7 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    const loggedUserJSON = window.localStorage.getItem(loginTokenName)
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
@@ -35,9 +37,7 @@ const App = () => {
         username, password,
       })
 
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      ) 
+      window.localStorage.setItem(loginTokenName, JSON.stringify(user)) 
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -74,17 +74,28 @@ const App = () => {
     </form>      
   )
 
+  const logOut = () => {
+    window.localStorage.removeItem(loginTokenName)
+    setUser(null)
+  }
+    
+  const loggedIn = () => (
+    <div>
+        <p>{user.name} logged in</p>
+        <button onClick={() => logOut()}>
+          logout
+        </button>
+        <h2>blogs</h2>
+        {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+        </div>
+  )
+
   return (
     <div>
 
       <Notification message={errorMessage} /> 
       {!user && loginForm()} 
-      {user && <div>
-        <p>{user.name} logged in</p>
-        <h2>blogs</h2>
-        {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
-        </div>
-      }
+      {user && loggedIn()}
     </div>
   )
 }
