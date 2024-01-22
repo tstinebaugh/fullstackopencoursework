@@ -10,6 +10,7 @@ const loginTokenName = 'loggedBlogappUser'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
+  const [infoMessage, setInfoMessage] = useState(null)
   
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
@@ -57,8 +58,11 @@ const App = () => {
 
   const handleNewBlog = async (event) => {
     event.preventDefault()
-    console.log(`New Blog post. Title ${title}, Author ${author}, URL ${url}`)
     const resp = await blogService.post({title, author, url}, user.token)
+    setInfoMessage(`A new blog ${title} by ${author} added`)
+      setTimeout(() => {
+        setInfoMessage(null)
+      }, 5000)
     setBlogs([...blogs, resp])
   }
 
@@ -142,6 +146,7 @@ const App = () => {
     <div>
       <h1>Blogs</h1>
       <Notification message={errorMessage} /> 
+      <Notification message={infoMessage} />
       {!user && loginForm()} 
       {user && loggedIn()}
     </div>
