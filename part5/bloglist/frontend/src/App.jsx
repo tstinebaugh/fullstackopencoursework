@@ -10,9 +10,14 @@ const loginTokenName = 'loggedBlogappUser'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
+  
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
+
+  const [title, setTitle] = useState('') 
+  const [author, setAuthor] = useState('') 
+  const [url, setURL] = useState('') 
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -25,7 +30,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      blogService.setToken(user.token)
+      loginService.setToken(user.token)
     }
   }, [])
 
@@ -38,7 +43,7 @@ const App = () => {
       })
 
       window.localStorage.setItem(loginTokenName, JSON.stringify(user)) 
-      blogService.setToken(user.token)
+      loginService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -48,6 +53,13 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleNewBlog = async (event) => {
+    event.preventDefault()
+    console.log(`New Blog post. Title ${title}, Author ${author}, URL ${url}`)
+    const resp = await blogService.post({title, author, url}, user.token)
+    setBlogs([...blogs, resp])
   }
 
   const loginForm = () => (
@@ -74,25 +86,61 @@ const App = () => {
     </form>      
   )
 
+  const createNewBlog = () => (
+    <div>
+      <h2>Create New Blog</h2>
+      <form onSubmit={handleNewBlog}>
+        <div>
+          title: <input
+          type="text"
+          value={title}
+          name="Title"
+          onChange={({ target }) => setTitle(target.value)}
+        />
+        </div>
+        <div>
+          author: <input
+          type="text"
+          value={author}
+          name="Author"
+          onChange={({ target }) => setAuthor(target.value)}
+        />
+        </div>
+        <div>
+          URL: <input
+          type="text"
+          value={url}
+          name="URL"
+          onChange={({ target }) => setURL(target.value)}
+        />
+        </div>
+        <button type="submit">create</button>
+      </form>
+    </div>
+  )
+
   const logOut = () => {
     window.localStorage.removeItem(loginTokenName)
     setUser(null)
   }
     
-  const loggedIn = () => (
-    <div>
+  const loggedIn = () => {
+    return (
+      <div>
         <p>{user.name} logged in</p>
         <button onClick={() => logOut()}>
           logout
         </button>
+        {createNewBlog()}
         <h2>blogs</h2>
         {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
-        </div>
-  )
+      </div>
+    )
+  }
 
   return (
     <div>
-
+      <h1>Blogs</h1>
       <Notification message={errorMessage} /> 
       {!user && loginForm()} 
       {user && loggedIn()}
