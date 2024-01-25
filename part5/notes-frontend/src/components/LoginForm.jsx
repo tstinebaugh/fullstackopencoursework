@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const LoginForm = ({
   handleSubmit,
@@ -6,7 +7,7 @@ const LoginForm = ({
   handlePasswordChange,
   username,
   password,
- }) => {
+}) => {
   const [loginVisible, setLoginVisible] = useState(false)
   const hideWhenVisible = { display: loginVisible ? 'none' : '' }
   const showWhenVisible = { display: loginVisible ? '' : 'none' }
@@ -17,7 +18,7 @@ const LoginForm = ({
         <button onClick={() => setLoginVisible(true)}>log in</button>
       </div>
       <div style={showWhenVisible}>
-       
+
         <h2>Login</h2>
 
         <form onSubmit={handleSubmit}>
@@ -35,7 +36,7 @@ const LoginForm = ({
               value={password}
               onChange={handlePasswordChange}
             />
-        </div>
+          </div>
           <button type="submit">login</button>
         </form>
 
@@ -43,6 +44,14 @@ const LoginForm = ({
       </div>
     </div>
   )
+}
+
+LoginForm.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+  handleUsernameChange: PropTypes.func.isRequired,
+  handlePasswordChange: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
+  password: PropTypes.string.isRequired
 }
 
 export default LoginForm

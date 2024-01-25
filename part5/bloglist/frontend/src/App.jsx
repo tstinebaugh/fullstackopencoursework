@@ -13,9 +13,9 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
   const [infoMessage, setInfoMessage] = useState(null)
-  
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
@@ -24,7 +24,7 @@ const App = () => {
     blogService.getAll().then(blogs => {
       sortBlogs(blogs)
       setBlogs(blogs)
-    })  
+    })
   }, [])
 
   useEffect(() => {
@@ -42,13 +42,13 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password,
       })
 
-      window.localStorage.setItem(loginTokenName, JSON.stringify(user)) 
+      window.localStorage.setItem(loginTokenName, JSON.stringify(user))
       loginService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -65,7 +65,7 @@ const App = () => {
     <form onSubmit={handleLogin}>
       <div>
         username
-          <input
+        <input
           type="text"
           value={username}
           name="Username"
@@ -74,7 +74,7 @@ const App = () => {
       </div>
       <div>
         password
-          <input
+        <input
           type="password"
           value={password}
           name="Password"
@@ -82,16 +82,16 @@ const App = () => {
         />
       </div>
       <button type="submit">login</button>
-    </form>      
+    </form>
   )
 
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     const resp = await blogService.post(blogObject, user.token)
     setInfoMessage(`A new blog ${blogObject.title} by ${blogObject.author} added`)
-      setTimeout(() => {
-        setInfoMessage(null)
-      }, 5000)
+    setTimeout(() => {
+      setInfoMessage(null)
+    }, 5000)
     setBlogs(blogs.concat(resp))
   }
 
@@ -111,13 +111,13 @@ const App = () => {
     setBlogs(updatedBlogs)
   }
 
-  const handleDelete = async (blogObject) => {   
+  const handleDelete = async (blogObject) => {
     if (!confirm(`Are you sure you want to delete ${blogObject.name} by ${blogObject.author}?`)) {
       return
     }
     try {
       await blogService.remove(blogObject, user.token)
-      setBlogs(blogs.filter(b => 
+      setBlogs(blogs.filter(b =>
         b.id !== blogObject.id
       ))
     } catch (exception) {
@@ -139,7 +139,7 @@ const App = () => {
     window.localStorage.removeItem(loginTokenName)
     setUser(null)
   }
-    
+
   const loggedIn = () => {
     return (
       <div>
@@ -150,9 +150,9 @@ const App = () => {
         {createNewBlog()}
         <h2>blogs</h2>
         {blogs.map(
-          blog => <Blog 
-            key={blog.id} 
-            blog={blog} 
+          blog => <Blog
+            key={blog.id}
+            blog={blog}
             handleLike={like}
             handleDelete={handleDelete} />
         )}
@@ -163,9 +163,9 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification message={errorMessage} /> 
+      <Notification message={errorMessage} />
       <Notification message={infoMessage} />
-      {!user && loginForm()} 
+      {!user && loginForm()}
       {user && loggedIn()}
     </div>
   )
