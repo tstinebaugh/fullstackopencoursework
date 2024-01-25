@@ -21,9 +21,10 @@ const App = () => {
   const blogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    blogService.getAll().then(blogs => {
+      sortBlogs(blogs)
+      setBlogs(blogs)
+    })  
   }, [])
 
   useEffect(() => {
@@ -34,6 +35,10 @@ const App = () => {
       loginService.setToken(user.token)
     }
   }, [])
+
+  const sortBlogs = (blogs) => {
+    blogs.sort((a, b) => b.likes - a.likes)
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -93,7 +98,7 @@ const App = () => {
   const like = async (blogObject) => {
     blogObject.likes += 1
     const resp = await blogService.put(blogObject, user.token)
-    setBlogs(blogs.map(b => {
+    const updatedBlogs = blogs.map(b => {
       if (b.id === blogObject.id) {
         return {
           ...b,
@@ -101,7 +106,27 @@ const App = () => {
         }
       }
       return b
-    }))
+    })
+    sortBlogs(updatedBlogs)
+    setBlogs(updatedBlogs)
+  }
+
+  const handleDelete = async (blogObject) => {   
+    if (!confirm(`Are you sure you want to delete ${blogObject.name} by ${blogObject.author}?`)) {
+      return
+    }
+    try {
+      await blogService.remove(blogObject, user.token)
+      setBlogs(blogs.filter(b => 
+        b.id !== blogObject.id
+      ))
+    } catch (exception) {
+      setErrorMessage('error deleting blog')
+      console.log(exception)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
 
   const createNewBlog = () => (
@@ -124,7 +149,13 @@ const App = () => {
         </button>
         {createNewBlog()}
         <h2>blogs</h2>
-        {blogs.map(blog => <Blog key={blog.id} blog={blog} handleLike={like} />)}
+        {blogs.map(
+          blog => <Blog 
+            key={blog.id} 
+            blog={blog} 
+            handleLike={like}
+            handleDelete={handleDelete} />
+        )}
       </div>
     )
   }

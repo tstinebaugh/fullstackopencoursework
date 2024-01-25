@@ -1,6 +1,10 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ 
+  blog, 
+  handleLike,
+  handleDelete, 
+}) => {
   const [expanded, setExpanded] = useState(false)
 
   const hideWhenExpanded = { display: expanded ? 'none' : '' }
@@ -25,12 +29,15 @@ const Blog = ({ blog, handleLike }) => {
         <button onClick={toggleExpanded}> view </button>
       </div>
       <div style={showWhenExpanded}>
-        <div>Title: {blog.title}</div> 
+        <div>
+          Title: {blog.title}
+          <button onClick={toggleExpanded}> hide </button>
+        </div> 
         <div>Author: {blog.author}</div>
         <div>{blog.url}</div>
         <div>likes: {blog.likes} <button onClick={() => handleLike(blog)}> like </button></div>
         <div>User: {blog.user?.username}</div>
-        <button onClick={toggleExpanded}> hide </button>
+        <div> <button onClick={() => handleDelete(blog)}> Delete </button></div>
       </div>
     </div>  
   )
