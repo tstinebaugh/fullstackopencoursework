@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useDispatch, useSelector } from "react-redux"
 import { vote } from "../reducers/anecdoteReducer"
+import { addNotification, remoteNotification } from "../reducers/NotifyReducer"
 
 const Anecdote = ({anecdote, handleVote}) => {
     return(
@@ -31,8 +32,14 @@ const AnecdoteList = () => {
                 <Anecdote
                 key={an.id}
                 anecdote={an}
-                handleVote={() => 
-                    dispatch(vote(an.id))}
+                handleVote={async () => {
+                    dispatch(vote(an.id))
+                    dispatch(addNotification(`Voted for ${an.content}`))
+                    await new Promise(resolve => setTimeout(resolve, 5000)); // 5 sec
+                    dispatch(remoteNotification())
+                    }
+                }
+                    
                 />
             )}
         </div>
