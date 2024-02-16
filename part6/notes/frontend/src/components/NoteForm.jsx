@@ -1,31 +1,28 @@
-import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { createNote } from '../reducers/noteReducer'
 
-const NoteForm = ({ createNote }) => {
-  const [newNote, setNewNote] = useState('')
+import noteService from '../services/notes'
 
-  const addNote = (event) => {
+const NoteForm = (props) => {
+  const dispatch = useDispatch()
+
+
+  const addNote = async (event) => {
     event.preventDefault()
-    createNote({
-      content: newNote,
-      important: true
-    })
+    const content = event.target.note.value
+    event.target.note.value = ''
 
-    setNewNote('')
+    const newNote = await noteService.createNew(content)
+    dispatch(createNote(newNote))
   }
 
   return (
-    <div>
-      <h2>Create a new note</h2>
-
-      <form onSubmit={addNote}>
-        <input
-          value={newNote}
-          onChange={event => setNewNote(event.target.value)}
-        />
-        <button type="submit">save</button>
-      </form>
-    </div>
+    <form onSubmit={addNote}>
+      <input name="note" />
+      <button type="submit">add</button>
+    </form>
   )
 }
+
 
 export default NoteForm
