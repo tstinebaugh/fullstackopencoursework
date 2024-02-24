@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux"
 import { createNew } from "../reducers/anecdoteReducer"
-import { addNotification, remoteNotification } from "../reducers/NotifyReducer"
+import { sendNotification } from "../reducers/NotifyReducer"
 import anecdoteService from '../services/anecdotes'
 
 const AnecdoteForm = () => {
@@ -12,11 +12,9 @@ const AnecdoteForm = () => {
         const content = event.target.anecdote.value
         event.target.anecdote.value = ''
         
-        const newAnecdote = await anecdoteService.createNew(content)
-        dispatch(createNew(newAnecdote))
-        dispatch(addNotification(`Added ${content}`))
-        await new Promise(resolve => setTimeout(resolve, 5000)); // 5 sec
-        dispatch(remoteNotification())
+        dispatch(createNew(content))
+        dispatch(sendNotification(`Added ${content}`, 5))
+
     }
 
     return(

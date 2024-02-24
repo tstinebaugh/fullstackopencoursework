@@ -16,4 +16,11 @@ const notifySlice = createSlice({
 })
   
 export const { addNotification, remoteNotification } = notifySlice.actions
+export const sendNotification = (message, timeoutSecs) => {
+  return async dispatch => {
+    dispatch(addNotification(message))
+    await new Promise(resolve => setTimeout(resolve, timeoutSecs * 1000))
+    dispatch(remoteNotification())
+  }
+}
 export default notifySlice.reducer
