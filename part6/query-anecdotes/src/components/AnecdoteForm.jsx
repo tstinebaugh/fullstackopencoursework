@@ -11,21 +11,30 @@ const AnecdoteForm = () => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    dispatch({ 
-      type: "ADD", 
-      payload: `Created ${content}`
-    })
     newAnecdoteMutation.mutate(content)
-    await new Promise(resolve => setTimeout(resolve, 5 * 1000))
-    dispatch({ type: "CLEAR" })
   }
 
   const newAnecdoteMutation = useMutation({
     mutationFn: createAnecdote,
-    onSuccess: (newAnecdote) => {
+    onSuccess: async (newAnecdote) => {
+      dispatch({ 
+        type: "ADD", 
+        payload: `Created ${newAnecdote}`
+      })
       const anecdotes = queryClient.getQueryData(['anecdotes'])
       queryClient.setQueryData(['anecdotes', anecdotes.concat(newAnecdote)])
       queryClient.invalidateQueries(['anecdotes'])
+      await new Promise(resolve => setTimeout(resolve, 5 * 1000))
+      dispatch({ type: "CLEAR" })
+    },
+    onError: async (err) => {
+      dispatch({ 
+        type: "ADD", 
+        payload: `Anecdote too short, must contain 5 characters or more`
+      })
+      console.log(err)
+      await new Promise(resolve => setTimeout(resolve, 5 * 1000))
+      dispatch({ type: "CLEAR" })
     }
   })
 
