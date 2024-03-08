@@ -2,5 +2,14 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit"
     },
-      "eslint.validate": ["javascript"]
+      "eslint.validate": [
+        "javascript"
+      ],
+      "editor.defaultFormatter": null,
+      "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      },
+      "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      }
 }
