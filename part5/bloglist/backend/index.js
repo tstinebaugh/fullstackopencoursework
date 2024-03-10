@@ -6,5 +6,6 @@ const logger = require('./utils/logger')
 const server = http.createServer(app)
 
 server.listen(config.PORT, () => {
+    console.log(config.MONGODB_URI)
     logger.info(`Server running on port ${config.PORT}`)
 })

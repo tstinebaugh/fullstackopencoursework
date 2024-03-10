@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
@@ -9,10 +11,12 @@ import loginService from "./services/login";
 
 const loginTokenName = "loggedBlogappUser";
 
+import { errorNotification, infoNotification } from "./reducers/NotifyReducer";
+
 const App = () => {
+  const dispatch = useDispatch();
+
   const [blogs, setBlogs] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [infoMessage, setInfoMessage] = useState(null);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -55,10 +59,7 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      setErrorMessage("Wrong credentials");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      dispatch(errorNotification("failed to log in", 5));
     }
   };
 
@@ -93,12 +94,12 @@ const App = () => {
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility();
     const resp = await blogService.post(blogObject, user.token);
-    setInfoMessage(
-      `A new blog ${blogObject.title} by ${blogObject.author} added`
+    dispatch(
+      infoNotification(
+        `A new blog ${blogObject.title} by ${blogObject.author} added`,
+        5
+      )
     );
-    setTimeout(() => {
-      setInfoMessage(null);
-    }, 5000);
     setBlogs(blogs.concat(resp));
   };
 
@@ -130,11 +131,7 @@ const App = () => {
       await blogService.remove(blogObject, user.token);
       setBlogs(blogs.filter((b) => b.id !== blogObject.id));
     } catch (exception) {
-      setErrorMessage("error deleting blog");
-      console.log(exception);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      dispatch(errorNotification("error deleting blog", 5));
     }
   };
 
@@ -171,8 +168,7 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification message={errorMessage} />
-      <Notification message={infoMessage} />
+      <Notification />
       {!user && loginForm()}
       {user && loggedIn()}
     </div>

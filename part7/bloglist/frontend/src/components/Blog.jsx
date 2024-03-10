@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 const Blog = ({ blog, handleLike, handleDelete }) => {
@@ -15,7 +15,7 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
     paddingTop: 10,
     paddingLeft: 2,
     border: "solid",
-    borderWidth: 1, 
+    borderWidth: 1,
     marginBottom: 5,
   };
 
