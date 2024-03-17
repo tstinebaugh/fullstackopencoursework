@@ -11,25 +11,22 @@ import loginService from "./services/login";
 
 const loginTokenName = "loggedBlogappUser";
 
-import { errorNotification, infoNotification } from "./reducers/NotifyReducer";
+import { errorNotification, infoNotification } from "./reducers/notifyReducer";
+import {
+  initializeBlogs,
+  vote,
+  createNew,
+  removeBlog,
+} from "./reducers/blogReducer";
 
 const App = () => {
   const dispatch = useDispatch();
-
-  const [blogs, setBlogs] = useState([]);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
   const blogFormRef = useRef();
-
-  useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      sortBlogs(blogs);
-      setBlogs(blogs);
-    });
-  }, []);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem(loginTokenName);
@@ -40,9 +37,11 @@ const App = () => {
     }
   }, []);
 
-  const sortBlogs = (blogs) => {
-    blogs.sort((a, b) => b.likes - a.likes);
-  };
+  useEffect(() => {
+    dispatch(initializeBlogs());
+  }, [dispatch]);
+
+  const blogs = useSelector((state) => state.blogs);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -93,30 +92,17 @@ const App = () => {
 
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility();
-    const resp = await blogService.post(blogObject, user.token);
+    dispatch(createNew(blogObject, user.token));
     dispatch(
       infoNotification(
         `A new blog ${blogObject.title} by ${blogObject.author} added`,
         5
       )
     );
-    setBlogs(blogs.concat(resp));
   };
 
   const like = async (blogObject) => {
-    blogObject.likes += 1;
-    const resp = await blogService.put(blogObject, user.token);
-    const updatedBlogs = blogs.map((b) => {
-      if (b.id === blogObject.id) {
-        return {
-          ...b,
-          likes: resp.likes,
-        };
-      }
-      return b;
-    });
-    sortBlogs(updatedBlogs);
-    setBlogs(updatedBlogs);
+    dispatch(vote(blogObject, user.token));
   };
 
   const handleDelete = async (blogObject) => {
@@ -128,8 +114,7 @@ const App = () => {
       return;
     }
     try {
-      await blogService.remove(blogObject, user.token);
-      setBlogs(blogs.filter((b) => b.id !== blogObject.id));
+      dispatch(removeBlog(blogObject.id, user.token));
     } catch (exception) {
       dispatch(errorNotification("error deleting blog", 5));
     }
