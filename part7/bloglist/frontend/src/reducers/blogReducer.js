@@ -42,27 +42,27 @@ export const initializeBlogs = () => {
   };
 };
 
-export const createNew = (content, token) => {
+export const createNew = (content) => {
   return async (dispatch) => {
-    const newBlog = await blogService.post(content, token);
+    const newBlog = await blogService.post(content);
     dispatch(appendBlog(newBlog));
   };
 };
 
-export const vote = (blog, token) => {
+export const likeBlog = (blog) => {
   return async (dispatch) => {
-    const votedblog = {
+    const likedblog = {
       ...blog,
       likes: blog.likes + 1,
     };
-    await blogService.put(votedblog, token);
-    dispatch(updateBlogs(votedblog));
+    await blogService.put(likedblog);
+    dispatch(updateBlogs(likedblog));
   };
 };
 
-export const removeBlog = (blogId, token) => {
+export const removeBlog = (blogId) => {
   return async (dispatch) => {
-    await blogService.remove(blogId, token);
+    await blogService.remove(blogId);
     dispatch(deleteBlog(blogId));
   };
 };

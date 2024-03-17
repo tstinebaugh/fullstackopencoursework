@@ -1,55 +1,60 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 import loginService from "../services/login";
+import blogService from "../services/blogs";
+import { errorNotification, infoNotification } from "./notifyReducer";
 
-const initialState = []
+const loginTokenName = "loggedBlogappUser";
+
+const initialState = "";
 
 const loginSlice = createSlice({
-  name: 'login',
-  initialState, 
+  name: "login",
+  initialState,
   reducers: {
-    // appendBlog(state, action) {
-    //   state.push(action.payload)
-    // },
-    // setBlogs(state, action) {
-    //   return action.payload
-    // },
-    // updateBlogs(state, action){
-    //   const update = action.payload
-    //   const newBlogs = state.map(b =>
-    //     b.id !== update.id ? b : update
-    //   )
-    //   sortBlogs(newBlogs)
-    //   return newBlogs
-    // }
-  }
-})
+    addUserState(_state, action) {
+      blogService.setToken(action.payload.token);
+      return action.payload;
+    },
+    removeUserState(_s, _a) {
+      blogService.setToken("");
+      return "";
+    },
+  },
+});
 
-// export const { appendBlog, setBlogs, updateBlogs } = blogSlice.actions
+export const { addUserState, removeUserState } = loginSlice.actions;
 
-// export const initializeBlogs = () => {
-//   return async dispatch => {
-//     const blogs = await blogService.getAll()
-//     dispatch(setBlogs(blogs))
-//   }
-// }
+export const checkCachedToken = () => {
+  return (dispatch) => {
+    const loggedUserJSON = window.localStorage.getItem(loginTokenName);
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      dispatch(addUserState(user));
+    }
+  };
+};
 
-// export const createNew = content => {
-//   return async dispatch => {
-//     const newBlog = await blogService.post(content)
-//     console.log(newAnecdote)
-//     dispatch(appendBlog(newBlog))
-//   }
-// }
+export const login = (username, password) => {
+  return async (dispatch) => {
+    try {
+      const user = await loginService.login({
+        username,
+        password,
+      });
 
-// export const vote = blog => {
-//   return async dispatch => {
-//     const votedblog = {
-//         ...blog,
-//         votes: blog.votes + 1
-//     }
-//     const updatedBlog = await blogService.put(votedblog)
-//     dispatch(updateBlogs(updatedBlog))
-//   }
-// }
+      window.localStorage.setItem(loginTokenName, JSON.stringify(user));
+      dispatch(addUserState(user));
+    } catch (exception) {
+      dispatch(errorNotification("failed to log in", 5));
+    }
+  };
+};
 
-export default loginSlice.reducer
+export const logOut = () => {
+  return async (dispatch) => {
+    window.localStorage.removeItem(loginTokenName);
+    dispatch(removeUserState());
+  };
+};
+
+export default loginSlice.reducer;

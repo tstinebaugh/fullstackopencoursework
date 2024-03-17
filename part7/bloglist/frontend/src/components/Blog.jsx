@@ -1,8 +1,33 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-const Blog = ({ blog, handleLike, handleDelete }) => {
+import { useDispatch } from "react-redux";
+
+import { errorNotification } from "../reducers/notifyReducer";
+import { likeBlog, removeBlog } from "../reducers/blogReducer";
+
+const Blog = ({ blog }) => {
   const [expanded, setExpanded] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleLike = async (blogObject) => {
+    dispatch(likeBlog(blogObject));
+  };
+
+  const handleDelete = async (blogObject) => {
+    if (
+      !confirm(
+        `Are you sure you want to delete ${blogObject.title} by ${blogObject.author}?`
+      )
+    ) {
+      return;
+    }
+    try {
+      dispatch(removeBlog(blogObject.id));
+    } catch (exception) {
+      dispatch(errorNotification("error deleting blog", 5));
+    }
+  };
 
   const hideWhenExpanded = { display: expanded ? "none" : "" };
   const showWhenExpanded = { display: expanded ? "" : "none" };
@@ -48,8 +73,6 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  handleLike: PropTypes.func.isRequired,
-  handleDelete: PropTypes.func.isRequired,
 };
 
 export default Blog;
