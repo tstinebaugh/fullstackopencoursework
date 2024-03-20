@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Routes, Route, Link, useMatch, useNavigate } from "react-router-dom";
 
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
@@ -8,6 +9,7 @@ import Togglable from "./components/Togglable";
 
 import { initializeBlogs } from "./reducers/blogReducer";
 import { checkCachedToken, login, logOut } from "./reducers/loginReducer";
+import UserList from "./components/UserList";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -74,16 +76,27 @@ const App = () => {
     dispatch(logOut());
   };
 
-  const loggedIn = () => {
+  const blogList = () => {
     return (
       <div>
-        <p>{user.name} logged in</p>
-        <button onClick={handleLogOut}>logout</button>
         {createNewBlog()}
         <h2>blogs</h2>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
         ))}
+      </div>
+    );
+  };
+
+  const loggedIn = () => {
+    return (
+      <div>
+        <p>{user.name} logged in</p>
+        <button onClick={handleLogOut}>logout</button>
+        <Routes>
+          <Route path="users" element={<UserList />} />
+          <Route path="/" element={blogList()} />
+        </Routes>
       </div>
     );
   };

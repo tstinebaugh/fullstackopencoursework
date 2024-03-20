@@ -71,8 +71,4 @@ const BlogForm = (refs) => {
   );
 };
 
-// BlogForm.propTypes = {
-//   toggleVisibility: PropTypes.func.isRequired,
-// };
-
 export default BlogForm;
