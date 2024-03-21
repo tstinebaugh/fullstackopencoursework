@@ -31,6 +31,10 @@ const ExpandedBlog = ({ blog }) => {
     }
   };
 
+  if (!blog) {
+    return null;
+  }
+
   return (
     <div>
       <h2>{blog.title}</h2>

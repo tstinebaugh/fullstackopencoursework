@@ -24,13 +24,13 @@ const Blogs = () => {
   );
 
   return (
-    <div>
+    <span>
+      <h2>Blog App</h2>
       {createNewBlog()}
-      <h2>blogs</h2>
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
-    </div>
+    </span>
   );
 };
 

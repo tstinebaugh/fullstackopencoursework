@@ -1,24 +1,17 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Routes, Route, Link, useMatch, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Routes, Route, useMatch } from "react-router-dom";
 
 import UserList from "./UserList";
 import Blogs from "./Blogs";
-import { logOut } from "../reducers/loginReducer";
 import User from "./User";
 import ExpandedBlog from "./ExpandedBlog";
+import Menubar from "./Menubar";
 
 const Loggedin = () => {
-  const dispatch = useDispatch();
-
-  const user = useSelector((state) => state.login);
   const users = useSelector((state) => state.users);
 
   const blogs = useSelector((state) => state.blogs);
-
-  const handleLogOut = () => {
-    dispatch(logOut());
-  };
 
   const userMatch = useMatch("/users/:id");
   const selectedUser = userMatch
@@ -32,8 +25,7 @@ const Loggedin = () => {
 
   return (
     <div>
-      <p>{user.name} logged in</p>
-      <button onClick={handleLogOut}>logout</button>
+      <Menubar />
       <Routes>
         <Route
           path="blogs/:id"
