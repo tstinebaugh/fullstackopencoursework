@@ -71,10 +71,10 @@ blogRouter.post("/:id/comments", async (request, response, next) => {
 
   const comment = request.body.comment;
 
-  const foundBlog = await Blog.findByIdAndUpdate(request.params.id, {
+  await Blog.findByIdAndUpdate(request.params.id, {
     $push: { comments: comment },
   });
-  response.json(foundBlog);
+  response.status(201).end();
 });
 
 module.exports = blogRouter;

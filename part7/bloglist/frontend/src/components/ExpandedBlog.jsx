@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { errorNotification } from "../reducers/notifyReducer";
-import { likeBlog, removeBlog } from "../reducers/blogReducer";
+import { likeBlog, removeBlog, addComment } from "../reducers/blogReducer";
 
 const ExpandedBlog = ({ blog }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [comment, setComment] = useState("");
 
   const handleLike = async (blogObject) => {
     dispatch(likeBlog(blogObject));
@@ -29,6 +30,11 @@ const ExpandedBlog = ({ blog }) => {
     } catch (exception) {
       dispatch(errorNotification("error deleting blog", 5));
     }
+  };
+
+  const handleComment = async (event) => {
+    event.preventDefault();
+    dispatch(addComment(blog, comment));
   };
 
   if (!blog) {
@@ -52,6 +58,20 @@ const ExpandedBlog = ({ blog }) => {
         Delete
       </button>
       <h3>Comments:</h3>
+      <form onSubmit={handleComment}>
+        <span>
+          <input
+            id="comment"
+            type="text"
+            value={comment}
+            name="Comment"
+            onChange={({ target }) => setComment(target.value)}
+          />
+        </span>
+        <button type="submit" id="add-comment">
+          Add Comment
+        </button>
+      </form>
       <ul>
         {blog.comments.map((comment) => (
           <li key={(Math.random() + 1).toString(36).substring(7)}>{comment}</li>
