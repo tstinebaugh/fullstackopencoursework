@@ -49,9 +49,14 @@ const ExpandedBlog = ({ blog }) => {
           handleDelete(blog);
         }}
       >
-        {" "}
-        Delete{" "}
+        Delete
       </button>
+      <h3>Comments:</h3>
+      <ul>
+        {blog.comments.map((comment) => (
+          <li key={(Math.random() + 1).toString(36).substring(7)}>{comment}</li>
+        ))}
+      </ul>
     </div>
   );
 };

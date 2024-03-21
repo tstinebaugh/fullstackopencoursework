@@ -1,65 +1,80 @@
-const blogRouter = require('express').Router()
-const Blog = require('../models/blog')
+const blogRouter = require("express").Router();
+const Blog = require("../models/blog");
 
-blogRouter.get('/', async (_request, response) => {
-    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
-    response.json(blogs)
-})
+blogRouter.get("/", async (_request, response) => {
+  const blogs = await Blog.find({}).populate("user", { username: 1, name: 1 });
+  response.json(blogs);
+});
 
-blogRouter.post('/', async (request, response) => {
-    const blog = new Blog(request.body)
+blogRouter.post("/", async (request, response) => {
+  const blog = new Blog(request.body);
 
-    if (!request.user) {
-        return response.status(401).json({ error: 'token missing' })
-    }
-    
-    blog.user = request.user.id
-    const savedBlog = await blog.save()
+  if (!request.user) {
+    return response.status(401).json({ error: "token missing" });
+  }
 
-    request.user.blogs = request.user.blogs.concat(savedBlog.id)
-    await request.user.save()
+  blog.user = request.user.id;
+  const savedBlog = await blog.save();
 
-    // Populate user info in blog
-    savedBlog.user = request.user
+  request.user.blogs = request.user.blogs.concat(savedBlog.id);
+  await request.user.save();
 
-    response.status(201).json(savedBlog)
-})
+  // Populate user info in blog
+  savedBlog.user = request.user;
 
-blogRouter.delete('/:id', async (request, response, next) => {
-    if (!request.user) {
-        return response.status(401).json({ error: 'token missing' })
-    }    
+  response.status(201).json(savedBlog);
+});
 
-    const blog = await Blog.findById(request.params.id).populate('user')
-    if (!blog) {
-        return response.status(404).json({error: `blog not found`})
-    }
+blogRouter.delete("/:id", async (request, response, next) => {
+  if (!request.user) {
+    return response.status(401).json({ error: "token missing" });
+  }
 
-    if (blog.user.id.toString() !== request.user.id.toString()) {
-        return response.status(401).json({ error: 'invalid token for deleting this blog' })
-    }
+  const blog = await Blog.findById(request.params.id).populate("user");
+  if (!blog) {
+    return response.status(404).json({ error: `blog not found` });
+  }
 
-    await Blog.findByIdAndDelete(request.params.id)
-    response.status(204).end()
-})
+  if (blog.user.id.toString() !== request.user.id.toString()) {
+    return response
+      .status(401)
+      .json({ error: "invalid token for deleting this blog" });
+  }
 
-blogRouter.put('/:id', async (request, response, next) => {
-    if (!request.user) {
-        return response.status(401).json({ error: 'token missing' })
-    } 
-    
-    const body = request.body
-  
-    const blog = {
-        id: body.id,
-        title: body.title,
-        author: body.author,
-        url: body.url,
-        likes: body.likes
-    }
+  await Blog.findByIdAndDelete(request.params.id);
+  response.status(204).end();
+});
 
-    await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-    response.json(blog)
-})
+blogRouter.put("/:id", async (request, response, next) => {
+  if (!request.user) {
+    return response.status(401).json({ error: "token missing" });
+  }
 
-module.exports = blogRouter
+  const body = request.body;
+
+  const blog = {
+    id: body.id,
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
+  };
+
+  await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
+  response.json(blog);
+});
+
+blogRouter.post("/:id/comments", async (request, response, next) => {
+  if (!request.user) {
+    return response.status(401).json({ error: "token missing" });
+  }
+
+  const comment = request.body.comment;
+
+  const foundBlog = await Blog.findByIdAndUpdate(request.params.id, {
+    $push: { comments: comment },
+  });
+  response.json(foundBlog);
+});
+
+module.exports = blogRouter;
