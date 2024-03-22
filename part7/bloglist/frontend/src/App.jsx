@@ -17,7 +17,7 @@ const App = () => {
   const user = useSelector((state) => state.login);
 
   return (
-    <div>
+    <div className="container">
       <Notification />
       {user ? <Loggedin /> : <Login />}
     </div>

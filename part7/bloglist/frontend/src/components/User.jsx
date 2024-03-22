@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import ListGroup from "react-bootstrap/ListGroup";
+import { LinkContainer } from "react-router-bootstrap";
 
 const User = ({ user }) => {
   if (!user) {
@@ -9,11 +11,15 @@ const User = ({ user }) => {
     <span>
       <h2>{user.name}</h2>
       <h3>Added Blogs:</h3>
-      <ul>
+      <ListGroup as="ul" className="d-inline-block">
         {user.blogs.map((blog) => (
-          <li key={user.name + blog.id}>{blog.title}</li>
+          <LinkContainer to={`/blogs/${blog.id}`} key={user.name + blog.id}>
+            <ListGroup.Item action to={`/blogs/${blog.id}`}>
+              {blog.title}
+            </ListGroup.Item>
+          </LinkContainer>
         ))}
-      </ul>
+      </ListGroup>
     </span>
   );
 };

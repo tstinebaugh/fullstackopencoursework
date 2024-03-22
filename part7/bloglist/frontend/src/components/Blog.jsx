@@ -1,26 +1,18 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
 import { Link } from "react-router-dom";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const Blog = ({ blog }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
   return (
-    <div style={blogStyle} className="blog">
-      <div>
+    <Row className="blog">
+      <Col xs="auto">
         <Link to={`/blogs/${blog.id}`}>
           {blog.title} by {blog.author}
         </Link>
-      </div>
-      {}
-    </div>
+      </Col>
+    </Row>
   );
 };
 

@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-
 import { useDispatch } from "react-redux";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 
 import { infoNotification } from "../reducers/notifyReducer";
 import { createNew } from "../reducers/blogReducer";
@@ -31,42 +35,45 @@ const BlogForm = (refs) => {
   };
 
   return (
-    <div>
-      <h2>Create New Blog</h2>
-      <form onSubmit={handleNewBlog}>
-        <div>
-          title:{" "}
-          <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
-            id="blog-title"
-          />
-        </div>
-        <div>
-          author:{" "}
-          <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({ target }) => setAuthor(target.value)}
-            id="blog-author"
-          />
-        </div>
-        <div>
-          URL:{" "}
-          <input
-            type="text"
-            value={url}
-            name="URL"
-            onChange={({ target }) => setURL(target.value)}
-            id="blog-url"
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </div>
+    <Row>
+      <Col xs="auto">
+        <h2>Create New Blog</h2>
+        <Form onSubmit={handleNewBlog}>
+          <FloatingLabel className="mb-3" controlId="blog-title" label="Title">
+            <Form.Control
+              className="text-muted"
+              type="text"
+              value={title}
+              name="Title"
+              onChange={({ target }) => setTitle(target.value)}
+            />
+          </FloatingLabel>
+          <FloatingLabel
+            className="mb-3"
+            controlId="blog-author"
+            label="Author"
+          >
+            <Form.Control
+              type="text"
+              value={author}
+              name="Author"
+              onChange={({ target }) => setAuthor(target.value)}
+            />
+          </FloatingLabel>
+          <FloatingLabel className="mb-3" controlId="blog-url" label="URL">
+            <Form.Control
+              type="text"
+              value={url}
+              name="URL"
+              onChange={({ target }) => setURL(target.value)}
+            />
+          </FloatingLabel>
+          <Button className="mb-3" type="submit">
+            create
+          </Button>
+        </Form>
+      </Col>
+    </Row>
   );
 };
 

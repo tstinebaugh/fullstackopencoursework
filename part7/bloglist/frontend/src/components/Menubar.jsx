@@ -1,6 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Routes, Route, Link, useMatch, useNavigate } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
 
 import { logOut } from "../reducers/loginReducer";
 
@@ -12,33 +16,33 @@ const Menubar = () => {
   const handleLogOut = () => {
     dispatch(logOut());
   };
-  const style = {
-    background: "lightgrey",
-    fontSize: 20,
-    borderStyle: "solid",
-    padding: 10,
-    marginBottom: 10,
-  };
-
-  const extraPadding = {
-    padding: 5,
-  };
 
   return (
-    <div style={style}>
-      <Link to="/" style={extraPadding}>
-        Blogs
-      </Link>
-      <Link to="/users" style={extraPadding}>
-        Users
-      </Link>
-      {user && (
-        <>
-          <span style={extraPadding}>{user.name} logged in</span>
-          <button onClick={handleLogOut}>logout</button>
-        </>
-      )}
-    </div>
+    <Navbar bg="dark" data-bs-theme="dark">
+      <Container>
+        <Navbar.Brand>Blog App</Navbar.Brand>
+        <Nav className="me-auto">
+          <LinkContainer to="/">
+            <Nav.Link>Blogs</Nav.Link>
+          </LinkContainer>
+          <LinkContainer to="/users">
+            <Nav.Link>Users</Nav.Link>
+          </LinkContainer>
+        </Nav>
+        <Nav>
+          {user && (
+            <>
+              <Navbar.Text className="me-3">
+                Signed in as: {user.name}
+              </Navbar.Text>
+              <Button variant="secondary" onClick={handleLogOut}>
+                logout
+              </Button>
+            </>
+          )}
+        </Nav>
+      </Container>
+    </Navbar>
   );
 };
 

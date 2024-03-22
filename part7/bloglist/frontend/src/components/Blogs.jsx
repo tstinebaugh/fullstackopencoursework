@@ -25,7 +25,6 @@ const Blogs = () => {
 
   return (
     <span>
-      <h2>Blog App</h2>
       {createNewBlog()}
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
