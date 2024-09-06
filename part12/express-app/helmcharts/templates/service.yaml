@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}express-app-svc"
+  labels:
+    app: fullstackopen
+spec:
+  selector:
+    app: fullstackopen
+  ports:
+    - protocol: TCP
+      port: 2000
+      targetPort: 3000

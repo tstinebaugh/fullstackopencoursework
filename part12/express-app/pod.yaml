@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: express-test-app
+  labels:
+    app: fullstackopen
+spec:
+  containers:
+    - name: fullstack-express-app
+      image: tstineba/fullstack-express-app:0.1

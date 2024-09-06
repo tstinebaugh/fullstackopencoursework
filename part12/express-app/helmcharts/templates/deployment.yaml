@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}-express-test-app"
+  labels:
+    app: fullstackopen
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: fullstackopen
+  template:
+    metadata:
+      labels:
+        app: fullstackopen
+    spec:
+      containers:
+        - name: fullstack-express-app
+          image: "{{ .Values.deployment.imageRepo }}:{{ .Chart.AppVersion }}"
